@@ -37,8 +37,7 @@ static const uint8_t K1 = 13;
 static const uint8_t K2 = 15;
 static const uint8_t K3 = 39;
 
-static const uint8_t LED1   = 0;
-static const uint8_t LED2   = 2;
+static const uint8_t LED1   = 2;
 static const uint8_t RGBLED = 5;
 static const uint8_t BOEN   = 4;
 
