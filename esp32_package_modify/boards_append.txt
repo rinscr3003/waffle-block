@@ -29,8 +29,9 @@ waffleblock.build.extra_libs=
 waffleblock.menu.PartitionScheme.default=Default (2 x 6.5 MB app, 3.6 MB SPIFFS)
 waffleblock.menu.PartitionScheme.default.build.partitions=default_16MB
 waffleblock.menu.PartitionScheme.default.upload.maximum_size=6553600
-waffleblock.menu.PartitionScheme.fatflash=16M Flash with Large FAT (2MB APP/12.5MB FAT)
-waffleblock.menu.PartitionScheme.fatflash.build.partitions=ffat
+waffleblock.menu.PartitionScheme.large_spiffs=Large SPIFFS (4.5MB APP/OTA/6.93MB SPIFFS)
+waffleblock.menu.PartitionScheme.large_spiffs.build.partitions=large_spiffs_16MB
+waffleblock.menu.PartitionScheme.large_spiffs.upload.maximum_size=4718592
 
 waffleblock.menu.FlashMode.qio=QIO
 waffleblock.menu.FlashMode.qio.build.flash_mode=dio
