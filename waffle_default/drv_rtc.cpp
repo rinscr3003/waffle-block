@@ -64,8 +64,14 @@ struct tm *drv_RTC_gettime() {
   timePtr.tm_sec = _drv_RTC_readbyte(0x00);
   return timePtr;
 }
-void drv_RTC_syncintime();
-void drv_RTC_syncouttime();
+void drv_RTC_syncintime() {
+  time_t nowtime = time(NULL);
+  struct tm timePtr = localtime(nowtime);
+  drv_RTC_settime(timePtr);
+}
+void drv_RTC_syncouttime(){
+  ;
+}
 void drv_RTC_setram(uint8_t b) {
   _drv_RTC_writebyte(0x07, b);
 }
