@@ -33,6 +33,11 @@ void drv_initRTC() {
   tzset();
   if (!drv_RTC_getvlowflag()) {
     drv_RTC_syncouttime();
+  } else {
+    uint8_t buf = _drv_RTC_readbyte(0x0F);
+    buf |= 0b00000001;
+    _drv_RTC_writebyte(0x0F, buf);
+    drv_RTC_clearallflags();
   }
 }
 void drv_RTC_settime(struct tm *timePtr) {
@@ -95,5 +100,23 @@ void drv_RTC_clearalarm();
 bool drv_RTC_isalarmon();
 bool drv_RTC_getalarmflag();
 void drv_RTC_clearalarmflag();
-bool drv_RTC_getvlowflag(); // 电压过低以至于停振
-bool drv_RTC_getvdetflag(); // 电压不足以开启温补
+void drv_RTC_clearallflags() {
+  _drv_RTC_writebyte(0x0E, 0x00);
+}
+bool drv_RTC_getvlowflag() {
+  // 电压过低以至于停振
+  uint8_t buf = _drv_RTC_readbyte(0x0E);
+  if ((buf & 0b00000010) == 0b00000010) {
+    return true;
+  }
+  return false;
+}
+
+bool drv_RTC_getvdetflag() {
+  // 电压不足以开启温补
+  uint8_t buf = _drv_RTC_readbyte(0x0E);
+  if ((buf & 0b00000001) == 0b00000001) {
+    return true;
+  }
+  return false;
+}

@@ -19,5 +19,6 @@ bool drv_RTC_isalarmon();
 void drv_RTC_clearalarm();
 bool drv_RTC_getalarmflag();
 void drv_RTC_clearalarmflag();
+void drv_RTC_clearallflags();
 bool drv_RTC_getvlowflag(); // 电压过低以至于停振
 bool drv_RTC_getvdetflag(); // 电压不足以开启温补
