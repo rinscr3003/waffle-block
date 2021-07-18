@@ -1,5 +1,7 @@
 #include "drv_rtc.h"
 #include <time.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include <Wire.h>
 
 const byte RX8025T_I2C_ADDR = 0x32;
@@ -29,6 +31,8 @@ void _drv_RTC_writebyte(uint8_t addr, uint8_t data) {
 
 void drv_initRTC() {
   Wire.begin(SDA, SCL);
+  setenv("TZ", "CST-8", 1);
+  tzset();
   if (!drv_RTC_getvlowflag()) {
     drv_RTC_syncouttime();
   }
@@ -66,11 +70,18 @@ struct tm *drv_RTC_gettime() {
 }
 void drv_RTC_syncintime() {
   time_t nowtime = time(NULL);
+  //localtime_r(&now, &timeinfo);
   struct tm timePtr = localtime(nowtime);
-  drv_RTC_settime(timePtr);
+  drv_RTC_settime(&timePtr);
 }
 void drv_RTC_syncouttime(){
-  ;
+  struct tm timePtr = drv_RTC_gettime();
+  int ts = mktime(&timePtr);
+  if (ts == -1) return;
+  struct timeval val;
+  val.tv_sec = ts;
+  val.tv_usec = 0;
+  settimeofday(&val,NULL);
 }
 void drv_RTC_setram(uint8_t b) {
   _drv_RTC_writebyte(0x07, b);
@@ -83,6 +94,7 @@ void drv_RTC_sethouralarm(int hour);
 //void drv_RTC_setweekalarm(int weekday);
 //void drv_RTC_setdayalarm(int day);
 void drv_RTC_clearalarm();
+bool drv_RTC_isalarmon();
 bool drv_RTC_getalarmflag();
 void drv_RTC_clearalarmflag();
 void drv_RTC_getvlowflag(); // 电压过低以至于停振
