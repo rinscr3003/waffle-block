@@ -11,6 +11,7 @@ void drv_RTC_setminalarm(int minute);
 void drv_RTC_sethouralarm(int hour);
 //void drv_RTC_setweekalarm(int weekday);
 //void drv_RTC_setdayalarm(int day);
+bool drv_RTC_isalarmon();
 void drv_RTC_clearalarm();
 bool drv_RTC_getalarmflag();
 void drv_RTC_clearalarmflag();
