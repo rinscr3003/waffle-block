@@ -11,6 +11,7 @@ void drv_initRGBLED() {
 void drv_RGBLED_pwron() {
   pinMode(BOEN, OUTPUT);
   digitalWrite(BOEN, LOW);
+  delay(2);
 }
 void drv_RGBLED_pwroff() {
   pinMode(BOEN, OUTPUT);
