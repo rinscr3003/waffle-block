@@ -26,7 +26,7 @@ void _drv_RTC_writebyte(uint8_t addr, uint8_t data) {
   Wire.write(data);
   Wire.endTransmission();
 }
-
+void _drv_RTC_onalarmint();
 void drv_initRTC() {
   //Wire.begin();
   setenv("TZ", "CST-8", 1);
@@ -39,6 +39,7 @@ void drv_initRTC() {
     _drv_RTC_writebyte(0x0F, buf);
     drv_RTC_clearallflags();
   }
+  attachInterrupt(34, _drv_RTC_onalarmint, FALLING);
 }
 void drv_RTC_settime(struct tm *timePtr) {
   if (timePtr->tm_year + 1900 > 2099 || timePtr->tm_year + 1900 < 2000)return;
@@ -94,12 +95,32 @@ uint8_t drv_RTC_getram() {
 }
 void drv_RTC_setminalarm(int minute);
 void drv_RTC_sethouralarm(int hour);
-//void drv_RTC_setweekalarm(int weekday);
-//void drv_RTC_setdayalarm(int day);
 void drv_RTC_clearalarm();
-bool drv_RTC_isalarmon();
-bool drv_RTC_getalarmflag();
-void drv_RTC_clearalarmflag();
+bool drv_RTC_isalarmon() {
+  uint8_t buf = _drv_RTC_readbyte(0x0F);
+  if ((buf & 0b00001000) == 0b00001000)return true;
+  return false;
+}
+bool drv_RTC_getalarmflag() {
+  uint8_t buf = _drv_RTC_readbyte(0x0E);
+  if ((buf & 0b00001000) == 0b00001000)return true;
+  return false;
+}
+void drv_RTC_clearalarmflag() {
+  uint8_t buf = _drv_RTC_readbyte(0x0E);
+  buf &= 0b11110111;
+  _drv_RTC_writebyte(0x0E, buf);
+}
+void (*_drv_RTC_alarmcallback)();
+void drv_RTC_setalarmcallback(void (*Callback)()) {
+  _drv_RTC_alarmcallback = Callback;
+}
+void _drv_RTC_onalarmint() {
+  drv_RTC_clearalarmflag();
+  if (_drv_RTC_alarmcallback != NULL) {
+    _drv_RTC_alarmcallback();
+  }
+}
 void drv_RTC_clearallflags() {
   _drv_RTC_writebyte(0x0E, 0x00);
 }
