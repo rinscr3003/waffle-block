@@ -26,7 +26,9 @@ void _drv_RTC_writebyte(uint8_t addr, uint8_t data) {
   Wire.write(data);
   Wire.endTransmission();
 }
+
 void _drv_RTC_onalarmint();
+
 void drv_initRTC() {
   //Wire.begin();
   setenv("TZ", "CST-8", 1);
@@ -39,8 +41,10 @@ void drv_initRTC() {
     _drv_RTC_writebyte(0x0F, buf);
     drv_RTC_clearallflags();
   }
+  drv_RTC_clearallflags();
   attachInterrupt(34, _drv_RTC_onalarmint, FALLING);
 }
+
 uint8_t _drv_RTC_bcd2dec(uint8_t bcd)
 {
   return ((bcd / 16) * 10) + (bcd % 16);
@@ -50,6 +54,7 @@ uint8_t _drv_RTC_dec2bcd(uint8_t dec)
 {
   return ((dec / 10) * 16) + (dec % 10);
 }
+
 void drv_RTC_settime(struct tm *timePtr) {
   if (timePtr->tm_year + 1900 > 2099 || timePtr->tm_year + 1900 < 2000)return;
   if (mktime(timePtr) == -1)return;
@@ -71,6 +76,7 @@ void drv_RTC_settime(struct tm *timePtr) {
   _drv_RTC_writebyte(0x04, _drv_RTC_dec2bcd(timePtr->tm_mday)); // set day
   _drv_RTC_writebyte(0x03, weekbcd[timePtr->tm_wday]); // set weekday
 }
+
 struct tm drv_RTC_gettime() {
   struct tm timePtr;
   timePtr.tm_year = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x06)) + 2000 - 1900;
@@ -81,12 +87,14 @@ struct tm drv_RTC_gettime() {
   timePtr.tm_sec = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x00));
   return timePtr;
 }
+
 void drv_RTC_syncintime() {
   time_t nowtime = time(NULL);
   //localtime_r(&now, &timeinfo);
   struct tm *timePtr = localtime(&nowtime);
   drv_RTC_settime(timePtr);
 }
+
 void drv_RTC_syncouttime() {
   struct tm timePtr = drv_RTC_gettime();
   int ts = mktime(&timePtr);
@@ -96,43 +104,54 @@ void drv_RTC_syncouttime() {
   val.tv_usec = 0;
   settimeofday(&val, NULL);
 }
+
 void drv_RTC_setram(uint8_t b) {
   _drv_RTC_writebyte(0x07, b);
 }
+
 uint8_t drv_RTC_getram() {
   return _drv_RTC_readbyte(0x07);
 }
+
 void drv_RTC_setminalarm(int minute);
 void drv_RTC_sethouralarm(int hour);
 void drv_RTC_clearalarm();
+
 bool drv_RTC_isalarmon() {
   uint8_t buf = _drv_RTC_readbyte(0x0F);
   if ((buf & 0b00001000) == 0b00001000)return true;
   return false;
 }
+
 bool drv_RTC_getalarmflag() {
   uint8_t buf = _drv_RTC_readbyte(0x0E);
   if ((buf & 0b00001000) == 0b00001000)return true;
   return false;
 }
+
 void drv_RTC_clearalarmflag() {
   uint8_t buf = _drv_RTC_readbyte(0x0E);
   buf &= 0b11110111;
   _drv_RTC_writebyte(0x0E, buf);
 }
+
 void (*_drv_RTC_alarmcallback)();
+
 void drv_RTC_setalarmcallback(void (*Callback)()) {
   _drv_RTC_alarmcallback = Callback;
 }
+
 void _drv_RTC_onalarmint() {
   drv_RTC_clearalarmflag();
   if (_drv_RTC_alarmcallback != NULL) {
     _drv_RTC_alarmcallback();
   }
 }
+
 void drv_RTC_clearallflags() {
   _drv_RTC_writebyte(0x0E, 0x00);
 }
+
 bool drv_RTC_getvlowflag() {
   // 电压过低以至于停振
   uint8_t buf = _drv_RTC_readbyte(0x0E);
