@@ -41,6 +41,15 @@ void drv_initRTC() {
   }
   attachInterrupt(34, _drv_RTC_onalarmint, FALLING);
 }
+uint8_t _drv_RTC_bcd2dec(uint8_t bcd)
+{
+  return ((bcd / 16) * 10) + (bcd % 16);
+}
+
+uint8_t _drv_RTC_dec2bcd(uint8_t dec)
+{
+  return ((dec / 10) * 16) + (dec % 10);
+}
 void drv_RTC_settime(struct tm *timePtr) {
   if (timePtr->tm_year + 1900 > 2099 || timePtr->tm_year + 1900 < 2000)return;
   if (mktime(timePtr) == -1)return;
@@ -54,22 +63,22 @@ void drv_RTC_settime(struct tm *timePtr) {
     0b01000000
   };
   //_drv_RTC_writebyte(0x0f, 0b01000000); // temporarily disable Alarm INT
-  _drv_RTC_writebyte(0x00, timePtr->tm_sec); // set second
-  _drv_RTC_writebyte(0x01, timePtr->tm_min); // set minute
-  _drv_RTC_writebyte(0x02, timePtr->tm_hour); // set hour
-  _drv_RTC_writebyte(0x06, timePtr->tm_year + 1900 - 2000); // set year
-  _drv_RTC_writebyte(0x05, timePtr->tm_mon + 1); // set month
-  _drv_RTC_writebyte(0x04, timePtr->tm_mday); // set day
+  _drv_RTC_writebyte(0x00, _drv_RTC_dec2bcd(timePtr->tm_sec)); // set second
+  _drv_RTC_writebyte(0x01, _drv_RTC_dec2bcd(timePtr->tm_min)); // set minute
+  _drv_RTC_writebyte(0x02, _drv_RTC_dec2bcd(timePtr->tm_hour)); // set hour
+  _drv_RTC_writebyte(0x06, _drv_RTC_dec2bcd(timePtr->tm_year + 1900 - 2000)); // set year
+  _drv_RTC_writebyte(0x05, _drv_RTC_dec2bcd(timePtr->tm_mon + 1)); // set month
+  _drv_RTC_writebyte(0x04, _drv_RTC_dec2bcd(timePtr->tm_mday)); // set day
   _drv_RTC_writebyte(0x03, weekbcd[timePtr->tm_wday]); // set weekday
 }
 struct tm drv_RTC_gettime() {
   struct tm timePtr;
-  timePtr.tm_year = _drv_RTC_readbyte(0x06) + 2000 - 1900;
-  timePtr.tm_mon = _drv_RTC_readbyte(0x05) - 1;
-  timePtr.tm_mday = _drv_RTC_readbyte(0x04);
-  timePtr.tm_hour = _drv_RTC_readbyte(0x02);
-  timePtr.tm_min = _drv_RTC_readbyte(0x01);
-  timePtr.tm_sec = _drv_RTC_readbyte(0x00);
+  timePtr.tm_year = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x06)) + 2000 - 1900;
+  timePtr.tm_mon = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x05)) - 1;
+  timePtr.tm_mday = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x04));
+  timePtr.tm_hour = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x02));
+  timePtr.tm_min = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x01));
+  timePtr.tm_sec = _drv_RTC_bcd2dec(_drv_RTC_readbyte(0x00));
   return timePtr;
 }
 void drv_RTC_syncintime() {
