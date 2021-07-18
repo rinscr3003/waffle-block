@@ -3,7 +3,7 @@
 #include "drv_charge.h"
 #include "drv_rtc.h"
 #include "drv_sht.h"
-//#include "drv_button.h"
+#include "drv_button.h"
 //#include "drv_misc.h"
 //#include "drv_tft.h"
 
@@ -15,8 +15,9 @@ void setup() {
   drv_initRGBLED();
   drv_initRTC();
   drv_initSHT3X();
+  drv_initBUTTON();
 
-  drv_RGBLED_setbrightness(150);
+  drv_RGBLED_setbrightness(200);
   drv_RGBLED_setcolor(0, 0, 255, 255);
   drv_RGBLED_setcolor(1, 255, 64, 64);
 }
