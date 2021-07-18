@@ -5,7 +5,7 @@ const uint8_t RX8025T_I2C_ADDR = 0x32;
 
 void drv_initRTC();
 void drv_RTC_settime(struct tm *timePtr);
-struct tm *drv_RTC_gettime();
+struct tm drv_RTC_gettime();
 void drv_RTC_synctime();
 void drv_RTC_setram(uint8_t b);
 uint8_t drv_RTC_getram();

@@ -26,7 +26,7 @@ void _drv_CHARGE_writebyte(uint8_t addr, uint8_t data) {
 }
 
 void drv_initCharge() {
-  Wire.begin();
+  //Wire.begin();
   _drv_CHARGE_writebyte(0x00, 0b00111100); // VINDPM=4.44V, IINLIM=1.0A
   _drv_CHARGE_writebyte(0x01, 0b00011011); // OTG DISABLED, CHARGE ENABLED, VSYSMIN=3.5V
   _drv_CHARGE_writebyte(0x02, 0b00000000); // ICHG=0.512A

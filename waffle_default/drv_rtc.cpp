@@ -28,7 +28,7 @@ void _drv_RTC_writebyte(uint8_t addr, uint8_t data) {
 }
 
 void drv_initRTC() {
-  Wire.begin();
+  //Wire.begin();
   setenv("TZ", "CST-8", 1);
   tzset();
   if (!drv_RTC_getvlowflag()) {
@@ -61,7 +61,7 @@ void drv_RTC_settime(struct tm *timePtr) {
   _drv_RTC_writebyte(0x04, timePtr->tm_mday); // set day
   _drv_RTC_writebyte(0x03, weekbcd[timePtr->tm_wday]); // set weekday
 }
-struct tm *drv_RTC_gettime() {
+struct tm drv_RTC_gettime() {
   struct tm timePtr;
   timePtr.tm_year = _drv_RTC_readbyte(0x06) + 2000 - 1900;
   timePtr.tm_mon = _drv_RTC_readbyte(0x05) - 1;
@@ -69,7 +69,7 @@ struct tm *drv_RTC_gettime() {
   timePtr.tm_hour = _drv_RTC_readbyte(0x02);
   timePtr.tm_min = _drv_RTC_readbyte(0x01);
   timePtr.tm_sec = _drv_RTC_readbyte(0x00);
-  return &timePtr;
+  return timePtr;
 }
 void drv_RTC_syncintime() {
   time_t nowtime = time(NULL);
@@ -78,8 +78,8 @@ void drv_RTC_syncintime() {
   drv_RTC_settime(timePtr);
 }
 void drv_RTC_syncouttime() {
-  struct tm *timePtr = drv_RTC_gettime();
-  int ts = mktime(timePtr);
+  struct tm timePtr = drv_RTC_gettime();
+  int ts = mktime(&timePtr);
   if (ts == -1) return;
   struct timeval val;
   val.tv_sec = ts;
