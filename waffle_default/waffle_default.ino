@@ -1,3 +1,4 @@
+#include <TFT_eSPI.h>
 #include "drv_rgbled.h"
 #include <Wire.h>
 #include "drv_charge.h"
@@ -6,6 +7,7 @@
 #include "drv_button.h"
 //#include "drv_misc.h"
 #include "drv_tft.h"
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -17,7 +19,9 @@ void setup() {
   drv_initSHT3X();
   drv_initBUTTON();
   drv_initTFT();
+  drv_TFT_getinstance().drawCentreString("LOADING...", 79, 25, 4);
   drv_TFT_loadfont();
+  drv_TFT_getinstance().fillScreen(TFT_BLACK);
 
   drv_RGBLED_setbrightness(20);
   drv_RGBLED_setcolor(0, 0, 255, 255);
