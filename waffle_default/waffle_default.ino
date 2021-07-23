@@ -5,7 +5,7 @@
 #include "drv_sht.h"
 #include "drv_button.h"
 //#include "drv_misc.h"
-//#include "drv_tft.h"
+#include "drv_tft.h"
 
 void setup() {
   // put your setup code here, to run once:
@@ -16,10 +16,15 @@ void setup() {
   drv_initRTC();
   drv_initSHT3X();
   drv_initBUTTON();
+  drv_initTFT();
+  drv_TFT_loadfont();
 
-  drv_RGBLED_setbrightness(200);
+  drv_RGBLED_setbrightness(20);
   drv_RGBLED_setcolor(0, 0, 255, 255);
   drv_RGBLED_setcolor(1, 255, 64, 64);
+
+  drv_TFT_drawtime60px(0, 7, 31);
+  drv_TFT_getinstance().drawCentreString("2021-07-23 星期五", 79, 60, 1);
 }
 
 void loop() {
