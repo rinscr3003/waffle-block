@@ -5,7 +5,7 @@
 #include "drv_rtc.h"
 #include "drv_sht.h"
 #include "drv_button.h"
-//#include "drv_misc.h"
+#include "drv_misc.h"
 #include "drv_tft.h"
 
 
@@ -19,6 +19,8 @@ void setup() {
   drv_initSHT3X();
   drv_initBUTTON();
   drv_initTFT();
+  drv_initMisc();
+
   drv_TFT_getinstance().drawCentreString("LOADING...", 79, 25, 4);
   drv_TFT_loadfont();
   drv_TFT_getinstance().fillScreen(TFT_BLACK);
