@@ -243,5 +243,6 @@ void drv_TFT_setbacklight(bool s);
 void drv_TFT_drawtime60px(uint8_t y, uint8_t h, uint8_t m);
 void drv_TFT_loadfont();
 void drv_TFT_unloadfont();
+void drv_TFT_drawpng(uint8_t x, uint8_t y, String filepath);
 
 #endif
