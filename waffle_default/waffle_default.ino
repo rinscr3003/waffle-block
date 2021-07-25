@@ -27,7 +27,7 @@ void setup() {
   drv_initMisc();
 
   drv_TFT_getinstance().drawCentreString("LOADING...", 79, 25, 4);
-  //drv_TFT_loadfont();
+  drv_TFT_loadfont();
   drv_TFT_getinstance().fillScreen(TFT_BLACK);
 
   drv_RGBLED_setbrightness(20);
@@ -43,7 +43,11 @@ void setup() {
   //drv_TFT_drawraw(8, 8, 64, 64, buf);
   //drv_TFT_getinstance().pushImageDMA(8, 8, 64, 64, buf, NULL);
   //drv_TFT_draw16b(8, 8, 64, 64, "/color-64/104.png.16b");
-  drv_TFT_drawpng(8, 8, "/color-64/351.png");
+  drv_TFT_drawpng(0, 16, "/color-64/104.png");
+  drv_TFT_getinstance().drawCentreString("阴", 79, 2, 1);
+  drv_TFT_getinstance().drawCentreString("29度", 110, 22, 1);
+  drv_TFT_getinstance().drawCentreString("61%", 110, 42, 1);
+  drv_TFT_getinstance().drawCentreString("AQI 良", 110, 62, 1);
   //heap_caps_free(buf);
 }
 
